@@ -23,7 +23,7 @@ The app does the following:
 4. Click Run -> Run, choose the sample you wish to run
 
 ## Key Tools & Technologies
-- **Database:** Sqlite
+- **Database:** Room Database
 - **Authentication:** Facebook login
 - **API/Service calls:** RetroFit 
 - **IDE:** Android studio
