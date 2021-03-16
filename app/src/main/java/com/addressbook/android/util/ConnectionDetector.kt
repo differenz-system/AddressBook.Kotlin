@@ -4,10 +4,9 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.provider.Settings
-import android.support.annotation.RequiresApi
 import com.addressbook.android.R
 
 /**
@@ -16,37 +15,35 @@ import com.addressbook.android.R
 object ConnectionDetector {
 
 
-    fun isConnectingToInternet(context: Context): Boolean {
-
+    fun isNetworkAvailable(context: Context?): Boolean {
+        if (context == null) return false
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val networks = connectivityManager.allNetworks
-            var networkInfo: NetworkInfo
-            for (mNetwork in networks) {
-                networkInfo = connectivityManager.getNetworkInfo(mNetwork)
-                if (networkInfo.state == NetworkInfo.State.CONNECTED) {
-                    return true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            if (capabilities != null) {
+                when {
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                        return true
+                    }
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                        return true
+                    }
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                        return true
+                    }
                 }
             }
         } else {
-            if (connectivityManager != null) {
-                val info = connectivityManager.allNetworkInfo
-                if (info != null) {
-                    for (anInfo in info) {
-                        if (anInfo.state == NetworkInfo.State.CONNECTED) {
-                            return true
-                        }
-                    }
-                }
+            val activeNetworkInfo = connectivityManager.activeNetworkInfo
+            if (activeNetworkInfo != null && activeNetworkInfo.isConnected) {
+                return true
             }
         }
         return false
     }
 
     fun internetCheck(context: Context, showDialog: Boolean): Boolean {
-        if (isConnectingToInternet(context))
+        if (isNetworkAvailable(context))
             return true
         if (showDialog)
             showAlertDialog(context, context.getString(R.string.msg_NO_INTERNET_TITLE), context.getString(R.string.msg_NO_INTERNET_MSG), false)

@@ -3,6 +3,7 @@ package com.addressbook.android.login
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import com.addressbook.android.R
 import com.addressbook.android.main.AddressBookListingActivity
 import com.addressbook.android.util.BaseAppCompatActivity
@@ -32,11 +33,11 @@ class SplashActivity : BaseAppCompatActivity() {
     }
 
     private fun startHandler() {
-        handler = Handler()
+        handler = Handler(Looper.getMainLooper())
         handler?.postDelayed(runnable, Constant.AB_SPLASH_TIME)//call runnable
     }
 
-    internal var runnable: Runnable? = Runnable { openNavigationActivity() }
+    internal var runnable: Runnable = Runnable { openNavigationActivity() }
 
 
     fun openNavigationActivity() {

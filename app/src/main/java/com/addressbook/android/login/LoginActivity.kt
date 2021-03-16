@@ -4,23 +4,16 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.addressbook.android.R
+import com.addressbook.android.databinding.ActivityLoginBinding
+import com.addressbook.android.login.viewModel.LoginViewModel
 import com.addressbook.android.main.AddressBookListingActivity
 import com.addressbook.android.util.*
 import com.facebook.CallbackManager
-import com.facebook.FacebookCallback
-import com.facebook.FacebookException
-import com.facebook.login.LoginManager
-import com.facebook.login.LoginResult
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.layout_tool_bar.*
-import java.util.*
 
 
 class LoginActivity : BaseAppCompatActivity() {
@@ -29,32 +22,40 @@ class LoginActivity : BaseAppCompatActivity() {
 
     //Facebook
     var callbackmanager: CallbackManager? = null
+    lateinit var binding: ActivityLoginBinding
+    lateinit var viewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         init()
     }
 
     private fun init() {
         globals = applicationContext as Globals
-        setSupportActionBar(toolbar)
-        toolbar_title.setText(getString(R.string.title_login))
+        setSupportActionBar(binding.toolbar.toolbar)
+        binding.toolbar.toolbarTitle
+                .text = getString(R.string.title_login)
 
-        btn_login.setOnClickListener(clickListener)
-        btn_login_fb.setOnClickListener(clickListener)
+        binding.btnLogin.setOnClickListener(clickListener)
+        binding.btnLoginFb.setOnClickListener(clickListener)
+
+
+        viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+
 
     }
 
     val clickListener = View.OnClickListener { view ->
 
-        when (view.getId()) {
+        when (view.id) {
 
             R.id.btn_login -> {
                 globals?.hideKeyboard(getContextActivity())
                 if (isValid()) {
                     if (ConnectionDetector.internetCheck(getContext(), true))
-                        doRequestForLoginUser()
+                        doRequestForLogin()
                 }
             }
             R.id.btn_login_fb -> {
@@ -65,66 +66,46 @@ class LoginActivity : BaseAppCompatActivity() {
         }
     }
 
-    fun FBLogin() {
-        callbackmanager = CallbackManager.Factory.create()
-        // Set permissions
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"))
-        LoginManager.getInstance().registerCallback(callbackmanager, object : FacebookCallback<LoginResult> {
-            override fun onSuccess(loginResult: LoginResult) {
-                intentAddressBookListing()
-            }
+    private fun doRequestForLogin() {
 
-            override fun onCancel() {
-                Log.d("cancel", "On cancel")
-            }
+        globals?.showProgressDialog(this)
 
-            override fun onError(error: FacebookException) {
-                Log.d("error", error.toString())
-            }
-        })
-    }
-
-    fun doRequestForLoginUser() {
-        var body = API.LoginBody(Email = globals?.trimString(et_email)!!,
-                Password = globals?.trimString(et_password)!!)
-
-        Log.e("Login body : ", body.toString())
-
-        globals?.showProgressDialog(getContext())
-        API.getInstance().login(body)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError({ e -> Toast.makeText(getContext(), e.message, Toast.LENGTH_SHORT).show() })
-                .subscribe({ response ->
+        viewModel.LoginUser(this,binding.etEmail.text.toString().trim(),binding.etPassword.text.toString().trim())
+                .observe(this, Observer {
                     globals?.dismissDialog()
-                    globals?.setUserDetails(response)
+                    globals?.setUserDetails(it)
                     intentAddressBookListing()
-
-                }, { error ->
-                    globals?.dismissDialog()
                 })
     }
 
+    fun FBLogin() {
+       viewModel.FBLogin(this).observe(this, androidx.lifecycle.Observer {
+           if(it.accessToken!=null) {
+               intentAddressBookListing()
+           }
+       })
+    }
+
     private fun intentAddressBookListing() {
-        val i_address_book_listing = Intent(this@LoginActivity, AddressBookListingActivity::class.java)
-        startActivity(i_address_book_listing)
+        val intent = Intent(this@LoginActivity, AddressBookListingActivity::class.java)
+        startActivity(intent)
         finish()
     }
 
     fun isValid(): Boolean {
-        if (UtilsValidation.validateEmptyEditText(et_email)) {
+        if (UtilsValidation.validateEmptyEditText(binding.etEmail)) {
             globals?.showToast(this@LoginActivity, getString(R.string.toast_err_email))
-            requestFocus(et_email)
+            requestFocus(binding.etEmail)
             return false
         }
-        if (UtilsValidation.validateEmail(et_email)) {
+        if (UtilsValidation.validateEmail(binding.etEmail)) {
             globals?.showToast(this@LoginActivity, getString(R.string.toast_err_enter_valid_email))
-            requestFocus(et_email)
+            requestFocus(binding.etEmail)
             return false
         }
-        if (UtilsValidation.validateEmptyEditText(et_password)) {
+        if (UtilsValidation.validateEmptyEditText(binding.etPassword)) {
             globals?.showToast(this@LoginActivity, getString(R.string.toast_err_password))
-            requestFocus(et_password)
+            requestFocus(binding.etPassword)
             return false
         }
         return true

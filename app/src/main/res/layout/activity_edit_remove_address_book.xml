@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,14 +9,20 @@
     android:orientation="vertical"
     tools:context="com.addressbook.android.main.EditRemoveAddressBookActivity">
 
-    <include layout="@layout/layout_tool_bar"/>
+    <include 
+        android:id="@+id/toolbar"
+        layout="@layout/layout_tool_bar"/>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:fillViewport="true"
         android:fitsSystemWindows="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:scrollbars="none">
 
         <LinearLayout
@@ -29,14 +35,14 @@
             android:paddingStart="@dimen/dim_45"
             android:paddingTop="@dimen/dim_10">
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/lbl_name"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/text_size_12"/>
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edt_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -51,7 +57,7 @@
                 android:textColorHint="@color/Gray70"
                 android:textSize="@dimen/text_size_12"/>
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dim_12"
@@ -59,7 +65,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/text_size_12"/>
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edt_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -74,7 +80,7 @@
                 android:textColorHint="@color/Gray70"
                 android:textSize="@dimen/text_size_12"/>
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dim_12"
@@ -82,7 +88,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/text_size_12"/>
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edt_contact_no"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,7 +104,7 @@
                 android:textColorHint="@color/Gray70"
                 android:textSize="@dimen/text_size_12"/>
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dim_12"
@@ -106,14 +112,14 @@
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/text_size_12"/>
 
-            <android.support.v7.widget.SwitchCompat
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switch_active"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center"
                 android:layout_marginTop="@dimen/dim_12"/>
 
-            <android.support.v7.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_save_update"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dim_45"
@@ -125,19 +131,8 @@
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/text_size_14"/>
 
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btn_delete_cancel"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dim_45"
-                android:layout_marginTop="@dimen/dim_8"
-                android:background="@drawable/rounded_corner_button"
-                android:gravity="center"
-                android:text="@string/action_delete"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_14"/>
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

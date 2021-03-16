@@ -1,8 +1,8 @@
 package com.addressbook.android.util
 
-import android.support.v7.widget.AppCompatEditText
 import android.text.TextUtils
 import android.util.Patterns
+import androidx.appcompat.widget.AppCompatEditText
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 

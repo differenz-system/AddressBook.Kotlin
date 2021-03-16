@@ -6,18 +6,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
-import android.support.multidex.MultiDex
-import android.support.multidex.MultiDexApplication
-import android.support.v7.widget.AppCompatEditText
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.multidex.MultiDex
+import androidx.multidex.MultiDexApplication
 import cc.cloudist.acplibrary.ACProgressConstant
 import cc.cloudist.acplibrary.ACProgressFlower
 import com.addressbook.android.R
-import com.addressbook.android.greendao.db.DaoMaster
-import com.addressbook.android.greendao.db.DaoSession
 import com.addressbook.android.login.LoginActivity
 import com.addressbook.android.model.UserLoginDetail
 import com.facebook.login.LoginManager
@@ -34,7 +32,6 @@ class Globals : MultiDexApplication() {
     internal var editor: SharedPreferences.Editor? = null
     var TAG = "Globals"
     private var instance: Globals? = null
-    private var daoSession: DaoSession? = null
 
     var ACPDialog: ACProgressFlower? = null
 
@@ -42,9 +39,7 @@ class Globals : MultiDexApplication() {
         super.onCreate()
         MultiDex.install(this)
         instance = this
-        val helper = DaoMaster.DevOpenHelper(this, "users-db") //The users-db here is the name of our database.
-        val db = helper.getWritableDb()
-        daoSession = DaoMaster(db).newSession()
+
     }
 
 
@@ -65,9 +60,6 @@ class Globals : MultiDexApplication() {
     }
 
 
-    fun getDaoSession(): DaoSession? {
-        return daoSession
-    }
 
     private var toast: Toast? = null
 
@@ -114,7 +106,7 @@ class Globals : MultiDexApplication() {
         }
         val mapType = object : TypeToken<UserLoginDetail>() {
 
-        }.getType()
+        }.type
         val gson = Gson()
         return gson.toJson(params, mapType)
     }
@@ -125,7 +117,7 @@ class Globals : MultiDexApplication() {
 
         val mapType = object : TypeToken<UserLoginDetail>() {
 
-        }.getType()
+        }.type
         val gson = Gson()
         return gson.fromJson(params, mapType)
     }
