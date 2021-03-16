@@ -5,13 +5,13 @@ This repository contains **Address Book** application for Android using Kotlin t
 
 The app does the following:
 1. **Login:** User can login via facebook or email/password. 
-2. **Home:** It will list all the save contacts, having the option to add a new contact on the top right.
+2. **Home:** It will list all the save contacts, having the option to add a new contact on the top right and also to edit and remove the contact.
 3. **Create new contact:** User can add a new contact to his address book by filling details here.
 
 ## Pre-requisites
-- Android device or emulator running API 16 (4.0.3 - Ice cream sandwich) or above
-- [Android SDK 27](https://developer.android.com/about/versions/oreo/android-8.0-migration.html#ptb)
-- [Android Studio 2.3.0+](https://developer.android.com/studio/index.html)
+- Android device or emulator running API 21 (Android 5.0 Lollipop) or above
+- [Android SDK 30](https://developer.android.com/about/versions/oreo/android-8.0-migration.html#ptb)
+- [Android Studio 4.1.2](https://developer.android.com/studio/index.html)
 
 ## Getting Started
 1. [Install Android Studio](https://developer.android.com/studio/index.html)
@@ -27,7 +27,7 @@ The app does the following:
 - **Authentication:** Facebook login
 - **API/Service calls:** RetroFit 
 - **IDE:** Android studio
-- **Framework:** MVC
+- **Framework:** MVVM
 
 ## Screenshots
 <img src="https://github.com/differenz-system/AddressBook.Kotlin/blob/master/ScreenShots/login.png" width="280"> <img src="https://github.com/differenz-system/AddressBook.Kotlin/blob/master/ScreenShots/list.png" width="280"> <img src="https://github.com/differenz-system/AddressBook.Kotlin/blob/master/ScreenShots/detail.png" width="280">
