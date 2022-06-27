@@ -9,9 +9,8 @@ The app does the following:
 3. **Create new contact:** User can add a new contact to his address book by filling details here.
 
 ## Pre-requisites
-- Android device or emulator running API 21 (Android 5.0 Lollipop) or above
-- [Android SDK 30](https://developer.android.com/about/versions/oreo/android-8.0-migration.html#ptb)
-- [Android Studio 4.1.2](https://developer.android.com/studio/index.html)
+- Android device or emulator running API 23 (6.0 - Marshmallow) or above
+- [Android Studio Chipmunk | 2021.2.1](https://developer.android.com/studio/index.html)
 
 ## Getting Started
 1. [Install Android Studio](https://developer.android.com/studio/index.html)
