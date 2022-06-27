@@ -16,7 +16,6 @@ abstract class AddressBookDatabase : RoomDatabase() {
 
     companion object{
 
-
         private const val DB_NAME = "addressbook_database.db"
         @Volatile private var instance: AddressBookDatabase? = null
         private val LOCK = Any()
@@ -32,9 +31,5 @@ abstract class AddressBookDatabase : RoomDatabase() {
             AddressBookDatabase::class.java,
             DB_NAME
         ).build()
-
     }
-
-
-
 }

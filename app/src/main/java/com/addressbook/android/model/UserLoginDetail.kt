@@ -7,10 +7,7 @@ import java.io.Serializable
  */
 
 
-data class UserLoginDetail(var Password: String, var Email: String) : Serializable {
-
-
-}
+data class UserLoginDetail(var Password: String, var Email: String) : Serializable
 
 
 

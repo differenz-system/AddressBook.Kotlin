@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
 
-class AddressViewFactory(val repository: AddressBookRepository) :
+class AddressViewFactory(private val repository: AddressBookRepository) :
     ViewModelProvider.NewInstanceFactory() {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         try {
             val constructor = modelClass.getDeclaredConstructor(AddressBookRepository::class.java)
             return constructor.newInstance(repository)

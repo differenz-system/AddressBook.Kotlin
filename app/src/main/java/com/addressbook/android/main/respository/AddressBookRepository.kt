@@ -6,8 +6,7 @@ import com.addressbook.android.roomDatabase.db.AddressBookDatabase
 
 class AddressBookRepository(private val addressBookDatabase: AddressBookDatabase) {
 
-    private var list :LiveData<List<AddressBook>> = addressBookDatabase
-            .getAddressBookDao().getAllAddressBook()
+    private var list :LiveData<List<AddressBook>> = addressBookDatabase.getAddressBookDao().getAllAddressBook()
 
     suspend fun insertAddressBook(addressBook: AddressBook) = addressBookDatabase.getAddressBookDao().insertAddressBook(addressBook)
 

@@ -34,7 +34,7 @@
         android:gravity="center"
         android:text="@string/lbl_no_list"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/text_size_18"
+        android:textSize="@dimen/_18ssp"
         android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

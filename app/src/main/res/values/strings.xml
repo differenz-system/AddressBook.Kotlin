@@ -20,6 +20,7 @@
     <string name="action_save">Save</string>
     <string name="action_update">Update</string>
     <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
     <string name="action_cancel">Cancel</string>
     <string name="lbl_active">Active</string>
     <string name="lbl_detail">Detail</string>
@@ -41,4 +42,6 @@
     <string name="action_no">No</string>
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
+    <string name="delete_address">Delete Address!!</string>
+    <string name="are_you_sure">Are you sure you want to delete this address?</string>
 </resources>

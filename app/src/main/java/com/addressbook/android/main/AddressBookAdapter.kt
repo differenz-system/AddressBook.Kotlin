@@ -8,11 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.addressbook.android.R
 import com.addressbook.android.databinding.AdapterAddressBinding
 import com.addressbook.android.roomDatabase.db.AddressBook
-import com.addressbook.android.util.UserDiffCallback
 
-/**
- * Author :- Jay Sharma
- */
 class AddressBookAdapter(private val onAddressViewActionListener: OnAddressViewActionListener? = null) :
     RecyclerView.Adapter<AddressBookAdapter.UserHolder>() {
 
@@ -28,8 +24,7 @@ class AddressBookAdapter(private val onAddressViewActionListener: OnAddressViewA
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserHolder {
-        val binding =
-            AdapterAddressBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = AdapterAddressBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return UserHolder(binding)
     }
 
@@ -39,8 +34,7 @@ class AddressBookAdapter(private val onAddressViewActionListener: OnAddressViewA
 
     override fun getItemCount() = addresses.size
 
-    inner class UserHolder(private val binding: AdapterAddressBinding) : RecyclerView.ViewHolder(binding.root),
-        View.OnClickListener {
+    inner class UserHolder(private val binding: AdapterAddressBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         init {
             //Set your click listener here
@@ -60,11 +54,8 @@ class AddressBookAdapter(private val onAddressViewActionListener: OnAddressViewA
             when (v?.id) {
                 R.id.bt_delete->onAddressViewActionListener?.onAddressDeleted(addresses[adapterPosition])
                 R.id.bt_edit->onAddressViewActionListener?.onAddressEdited(addresses[adapterPosition]);
-
             }
-
         }
-
     }
 
     interface OnAddressViewActionListener {
@@ -72,4 +63,26 @@ class AddressBookAdapter(private val onAddressViewActionListener: OnAddressViewA
         fun onAddressEdited(addressBook: AddressBook)
     }
 
+    inner class UserDiffCallback(private val oldItems: List<AddressBook>, private val newItems: List<AddressBook>) : DiffUtil.Callback() {
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItems[oldItemPosition].id == newItems[newItemPosition].id
+        }
+
+        override fun getOldListSize(): Int {
+            return oldItems.size
+        }
+
+        override fun getNewListSize(): Int {
+            return newItems.size
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItems[oldItemPosition] == newItems[newItemPosition]
+        }
+
+        //Uncomment to notify change payload
+        /*override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+            return super.getChangePayload(oldItemPosition, newItemPosition)
+        }*/
+    }
 }

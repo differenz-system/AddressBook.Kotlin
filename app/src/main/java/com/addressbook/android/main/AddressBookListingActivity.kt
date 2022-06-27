@@ -1,7 +1,5 @@
 package com.addressbook.android.main
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -17,24 +15,20 @@ import com.addressbook.android.main.respository.AddressViewFactory
 import com.addressbook.android.main.viewModel.AddressViewModel
 import com.addressbook.android.roomDatabase.db.AddressBook
 import com.addressbook.android.roomDatabase.db.AddressBookDatabase
-import com.addressbook.android.util.Constant
-import com.addressbook.android.util.Globals
+import com.addressbook.android.util.*
 import java.io.Serializable
-import java.util.*
 
-class AddressBookListingActivity : AppCompatActivity(), AddressBookAdapter.OnAddressViewActionListener {
+class AddressBookListingActivity : AppCompatActivity(), AddressBookAdapter.OnAddressViewActionListener, View.OnClickListener {
 
-
-    private var addressbookList: List<AddressBook> = ArrayList()
+    private var addressableList: List<AddressBook> = ArrayList()
     private var adapterAddressBookList: AddressBookAdapter? = null
-    private var globals: Globals? = null
-    private var ADD_EDIT_ADDRESS_REQ_CODE = 1010
     private lateinit var binding: ActivityAddressBookListingBinding
 
     private lateinit var viewModel: AddressViewModel
     lateinit var addressBookDatabase: AddressBookDatabase
     lateinit var addressBookRepository: AddressBookRepository
     lateinit var factory: AddressViewFactory
+    private val currentContext = this@AddressBookListingActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,40 +44,38 @@ class AddressBookListingActivity : AppCompatActivity(), AddressBookAdapter.OnAdd
 
     private fun setToolbar() {
 
-        globals = applicationContext as Globals
-        setSupportActionBar(binding.toolbar.toolbar)
-        binding.toolbar.toolbarTitle.text = getString(R.string.lbl_address_book)
-        binding.toolbar.toolbarLeft.visibility = View.VISIBLE
-        binding.toolbar.toolbarRight.visibility = View.VISIBLE
-        binding.toolbar.toolbarLeft.text = getString(R.string.action_logout)
-        binding.toolbar.toolbarRight.text = getString(R.string.action_add)
+        binding.toolbar.apply {
+            setSupportActionBar(toolbar)
+            toolbarTitle.text = getString(R.string.lbl_address_book)
+            toolbarLeft.show()
+            toolbarRight.show()
+            toolbarLeft.text = getString(R.string.action_logout)
+            toolbarRight.text = getString(R.string.action_add)
 
-        binding.toolbar.toolbarRight.setOnClickListener(clickListener)
-        binding.toolbar.toolbarLeft.setOnClickListener(clickListener)
-
+            toolbarRight.setOnClickListener(currentContext)
+            toolbarLeft.setOnClickListener(currentContext)
+        }
     }
 
 
     private fun setUpList() {
-
         addressBookDatabase = AddressBookDatabase(this)
         addressBookRepository = AddressBookRepository(addressBookDatabase)
         factory = AddressViewFactory(addressBookRepository)
-        viewModel = ViewModelProvider(this,factory)[AddressViewModel::class.java]
+        viewModel = ViewModelProvider(this, factory)[AddressViewModel::class.java]
 
-        viewModel.getAllAddress().observe(this, androidx.lifecycle.Observer {
-            addressbookList = it
+        viewModel.getAllAddress().observe(this) {
+            addressableList = it
             setAdapter()
-
-        })
+        }
     }
 
     private fun setAdapter() {
-        if (addressbookList.isNotEmpty()) {
+        if (addressableList.isNotEmpty()) {
             if (adapterAddressBookList == null) {
                 adapterAddressBookList = AddressBookAdapter(this)
             }
-            adapterAddressBookList!!.setData(addressbookList)
+            adapterAddressBookList!!.setData(addressableList)
 
             binding.rvAddressList.apply {
                 layoutManager = LinearLayoutManager(context)
@@ -98,59 +90,42 @@ class AddressBookListingActivity : AppCompatActivity(), AddressBookAdapter.OnAdd
     }
 
 
-
-    private fun getContext(): Context {
-        return this@AddressBookListingActivity
-    }
-
     private fun handleEmptyList() {
-
-        if (addressbookList.isEmpty()) {
-            binding.tvNoList.visibility = View.VISIBLE
-            binding.rvAddressList.visibility = View.GONE
-        } else {
-            binding.tvNoList.visibility = View.GONE
-            binding.rvAddressList.visibility = View.VISIBLE
-        }
-
+        binding.tvNoList.handleVisibleHide(addressableList.isEmpty())
+        binding.rvAddressList.handleVisibleHide(addressableList.isNotEmpty())
     }
 
-    private val clickListener = View.OnClickListener { view ->
-        when (view.id) {
+    private fun saveAddressBook() {
+        openActivity(EditRemoveAddressBookActivity::class.java)
+    }
+
+    private fun editAddressBook(addressBook: AddressBook) {
+        openActivityWithIntent(EditRemoveAddressBookActivity::class.java, Constant.Key_editAddressBook, addressBook as Serializable)
+    }
+
+    override fun onAddressDeleted(addressBook: AddressBook) {
+        val dialog = AlertDialog.Builder(this, R.style.ThemeOverlay_AppCompat_Dialog)
+        dialog.setTitle(resources.getString(R.string.delete_address))
+            .setMessage(resources.getString(R.string.are_you_sure))
+            .setPositiveButton(R.string.yes) { _, _ ->
+                viewModel.deleteProduct(addressBook)
+            }.setNegativeButton(R.string.cancel, null).create().show()
+    }
+
+    override fun onAddressEdited(addressBook: AddressBook) {
+        editAddressBook(addressBook)
+    }
+
+    override fun onClick(view: View?) {
+        when (view?.id) {
             R.id.toolbar_right -> {
                 saveAddressBook()
             }
 
             R.id.toolbar_left -> {
-                globals?.setUserDetails(null)
-                globals?.logoutProcess(getContext())
+                SharedPrefsHelper.setUserDetails(null)
+                Globals.logoutProcess(currentContext)
             }
         }
-    }
-
-    private fun saveAddressBook() {
-        val addBook = Intent(this, EditRemoveAddressBookActivity::class.java)
-        startActivityForResult(addBook, ADD_EDIT_ADDRESS_REQ_CODE)
-    }
-
-    private fun editAddressBook(addressBook: AddressBook) {
-
-        val editBook = Intent(getContext(), EditRemoveAddressBookActivity::class.java)
-        editBook.putExtra(Constant.Key_editAddressBook, addressBook as Serializable)
-        startActivityForResult(editBook, ADD_EDIT_ADDRESS_REQ_CODE)
-
-    }
-
-    override fun onAddressDeleted(addressBook: AddressBook) {
-        val dialog = AlertDialog.Builder(this, R.style.ThemeOverlay_AppCompat_Dialog)
-        dialog.setTitle("Delete Address!!")
-                .setMessage("Are you sure you want to delete this address?")
-                .setPositiveButton(R.string.yes) { _, _ ->
-                    viewModel.deleteProduct(addressBook)
-                }.setNegativeButton(R.string.cancel, null).create().show()
-    }
-
-    override fun onAddressEdited(addressBook: AddressBook) {
-        editAddressBook(addressBook)
     }
 }

@@ -1,110 +1,121 @@
 package com.addressbook.android.login
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.addressbook.android.R
+import com.addressbook.android.api.ApiRequest
+import com.addressbook.android.api.NetworkStatus
 import com.addressbook.android.databinding.ActivityLoginBinding
 import com.addressbook.android.login.viewModel.LoginViewModel
 import com.addressbook.android.main.AddressBookListingActivity
+import com.addressbook.android.model.LoginUserResponse
+import com.addressbook.android.model.UserLoginDetail
 import com.addressbook.android.util.*
 import com.facebook.CallbackManager
 
 
-class LoginActivity : BaseAppCompatActivity() {
-
-    var globals: Globals? = null
+class LoginActivity : BaseAppCompatActivity(), View.OnClickListener {
 
     //Facebook
     var callbackmanager: CallbackManager? = null
     lateinit var binding: ActivityLoginBinding
     lateinit var viewModel: LoginViewModel
+    private val currentContext = this@LoginActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+        setUpObserver()
     }
 
     private fun init() {
-        globals = applicationContext as Globals
-        setSupportActionBar(binding.toolbar.toolbar)
-        binding.toolbar.toolbarTitle
-                .text = getString(R.string.title_login)
-
-        binding.btnLogin.setOnClickListener(clickListener)
-        binding.btnLoginFb.setOnClickListener(clickListener)
-
-
+        binding.apply {
+            setSupportActionBar(toolbar.toolbar)
+            toolbar.toolbarTitle.text = getString(R.string.title_login)
+            btnLogin.setOnClickListener(currentContext)
+            btnLoginFb.setOnClickListener(currentContext)
+        }
         viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
-
-
     }
 
-    val clickListener = View.OnClickListener { view ->
+    private fun doRequestForLogin() {
+        val body = ApiRequest.LoginBody(binding.etEmail.text.toString().trim(), binding.etPassword.text.toString().trim())
+        viewModel.loginUser(body)
+    }
 
-        when (view.id) {
-
-            R.id.btn_login -> {
-                globals?.hideKeyboard(getContextActivity())
-                if (isValid()) {
-                    if (ConnectionDetector.internetCheck(getContext(), true))
-                        doRequestForLogin()
+    private fun setUpObserver() {
+        viewModel.getLoginData().observe(this) {
+            when (it) {
+                is NetworkStatus.Failed -> {
+                    toast(it.msg)
+                    Globals.showProgressDialog(this)
                 }
-            }
-            R.id.btn_login_fb -> {
-                globals?.hideKeyboard(getContextActivity())
-                if (ConnectionDetector.internetCheck(getContext(), true))
-                    FBLogin()
+                is NetworkStatus.NoInternet -> {
+                    Globals.dismissDialog()
+                }
+                is NetworkStatus.Running -> {
+                    Globals.showProgressDialog(this)
+                }
+                is NetworkStatus.Success -> {
+                    Globals.dismissDialog()
+                    val loginData = it.data as LoginUserResponse.Data
+                    val userLoginDetail = UserLoginDetail(loginData.password, loginData.email)
+                    SharedPrefsHelper.setUserDetails(userLoginDetail)
+                    intentAddressBookListing()
+                }
             }
         }
     }
 
-    private fun doRequestForLogin() {
-
-        globals?.showProgressDialog(this)
-
-        viewModel.LoginUser(this,binding.etEmail.text.toString().trim(),binding.etPassword.text.toString().trim())
-                .observe(this, Observer {
-                    globals?.dismissDialog()
-                    globals?.setUserDetails(it)
-                    intentAddressBookListing()
-                })
+    override fun onClick(view: View?) {
+        currentContext.apply {
+            Globals.hideKeyboard(this)
+            when (view?.id) {
+                R.id.btn_login -> {
+                    if (isValid()) {
+                        if (ConnectionDetector.internetCheck(this, true))
+                            doRequestForLogin()
+                    }
+                }
+                R.id.btn_login_fb -> {
+                    if (ConnectionDetector.internetCheck(this, true))
+                        fBLogin()
+                }
+            }
+        }
     }
 
-    fun FBLogin() {
-       viewModel.FBLogin(this).observe(this, androidx.lifecycle.Observer {
-           if(it.accessToken!=null) {
-               intentAddressBookListing()
-           }
-       })
+    private fun fBLogin() {
+        viewModel.fBLogin(this).observe(this, androidx.lifecycle.Observer {
+            if (it.accessToken != null) {
+                intentAddressBookListing()
+            }
+        })
     }
 
     private fun intentAddressBookListing() {
-        val intent = Intent(this@LoginActivity, AddressBookListingActivity::class.java)
-        startActivity(intent)
+        openActivity(AddressBookListingActivity::class.java)
         finish()
     }
 
-    fun isValid(): Boolean {
+    private fun isValid(): Boolean {
         if (UtilsValidation.validateEmptyEditText(binding.etEmail)) {
-            globals?.showToast(this@LoginActivity, getString(R.string.toast_err_email))
+            toast(getString(R.string.toast_err_email))
             requestFocus(binding.etEmail)
             return false
         }
         if (UtilsValidation.validateEmail(binding.etEmail)) {
-            globals?.showToast(this@LoginActivity, getString(R.string.toast_err_enter_valid_email))
+            toast(getString(R.string.toast_err_enter_valid_email))
             requestFocus(binding.etEmail)
             return false
         }
         if (UtilsValidation.validateEmptyEditText(binding.etPassword)) {
-            globals?.showToast(this@LoginActivity, getString(R.string.toast_err_password))
+            toast(getString(R.string.toast_err_password))
             requestFocus(binding.etPassword)
             return false
         }
@@ -115,14 +126,6 @@ class LoginActivity : BaseAppCompatActivity() {
         if (view.requestFocus()) {
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
         }
-    }
-
-    private fun getContext(): Context {
-        return this@LoginActivity
-    }
-
-    private fun getContextActivity(): Activity {
-        return this@LoginActivity
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

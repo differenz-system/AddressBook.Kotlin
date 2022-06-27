@@ -1,28 +1,28 @@
 package com.addressbook.android.login.repository
 
-import android.util.Log
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.addressbook.android.api.ApiClient
+import com.addressbook.android.api.ApiRequest
+import com.addressbook.android.api.BaseRepository
+import com.addressbook.android.api.NetworkStatus
 import com.addressbook.android.login.LoginActivity
-import com.addressbook.android.main.respository.AddressBookRepository
-import com.addressbook.android.model.UserLoginDetail
-import com.addressbook.android.util.API
-import com.addressbook.android.util.Globals
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
-class LoginRepository() {
+
+class LoginRepository(application: Application) : BaseRepository(application) {
 
     private lateinit var callbackmanager: CallbackManager
     val loginResults = MutableLiveData<LoginResult>()
-    val responseData = MutableLiveData<UserLoginDetail>()
+    private val responseData = MutableLiveData<NetworkStatus>()
 
-    suspend fun FBLogin(loginActivity: LoginActivity): LiveData<LoginResult> {
+
+    fun fBLogin(loginActivity: LoginActivity): LiveData<LoginResult> {
 
             callbackmanager = CallbackManager.Factory.create()
             // Set permissions
@@ -43,25 +43,16 @@ class LoginRepository() {
         return loginResults
     }
 
-    suspend fun doRequestForLoginUser(activity: LoginActivity, email: String, pwd: String):MutableLiveData<UserLoginDetail> {
 
-        val body = API.LoginBody(email,pwd)
-        val globals = activity.applicationContext as Globals
+    //this method called from LoginViewModel
+    suspend fun doRequestForLoginUser(body: ApiRequest.LoginBody) {
+        runApi(
+            apiCall = {
+                ApiClient.apiClient(application).login(body)
+            }, apiStatus = responseData
+        )
 
-        API.getInstance().login(body)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError({ e -> globals.showToast(activity, e.message) })
-                .subscribe({ response ->
-
-                    responseData.value = response
-
-                }, { error ->
-
-                })
-
-        return responseData
     }
-
-
+    //pass this status to loginViewModel
+    fun getLoginData() = responseData
 }

@@ -9,7 +9,7 @@ object Constant {
 
 
 
-    val MM_secrets = "secrets"
+    const val MM_secrets = "secrets"
     val AB_USER_MAP = "USER_MAP"
 
     val Key_editAddressBook = "editAddressBook"

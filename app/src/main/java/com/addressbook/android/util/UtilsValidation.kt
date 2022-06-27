@@ -41,10 +41,9 @@ object UtilsValidation {
 
     fun isValidPassword(password: String): Boolean {
         val pattern: Pattern
-        val matcher: Matcher
         val PASSWORD_PATTERN = "^.*(?=.{8,})(?=.*\\d)(?=.*[a-zA-Z]).*$"
         pattern = Pattern.compile(PASSWORD_PATTERN)
-        matcher = pattern.matcher(password)
+        val matcher: Matcher = pattern.matcher(password)
         return matcher.matches()
     }
 
