@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class AddressViewModel(private val repository: AddressBookRepository) : ViewModel() {
 
-    var list: LiveData<List<AddressBook>> = repository.getAllAddress()
+    private var list: LiveData<List<AddressBook>> = repository.getAllAddress()
 
     fun insertAddressBook(addressBook: AddressBook) {
         viewModelScope.launch {
@@ -40,5 +40,3 @@ class AddressViewModel(private val repository: AddressBookRepository) : ViewMode
 
     fun getAllAddress(): LiveData<List<AddressBook>> = list
 }
-
-

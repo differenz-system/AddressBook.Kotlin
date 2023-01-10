@@ -14,20 +14,18 @@ import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 
-
 class LoginRepository(application: Application) : BaseRepository(application) {
 
-    private lateinit var callbackmanager: CallbackManager
     val loginResults = MutableLiveData<LoginResult>()
     private val responseData = MutableLiveData<NetworkStatus>()
 
-
     fun fBLogin(loginActivity: LoginActivity): LiveData<LoginResult> {
 
-            callbackmanager = CallbackManager.Factory.create()
+            val callbackManager = CallbackManager.Factory.create()
+
             // Set permissions
             LoginManager.getInstance().logInWithReadPermissions(loginActivity, listOf("public_profile", "email"))
-            LoginManager.getInstance().registerCallback(callbackmanager, object : FacebookCallback<LoginResult> {
+            LoginManager.getInstance().registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
 
                 override fun onSuccess(loginResult: LoginResult) {
                     loginResults.value = loginResult
@@ -43,7 +41,6 @@ class LoginRepository(application: Application) : BaseRepository(application) {
         return loginResults
     }
 
-
     //this method called from LoginViewModel
     suspend fun doRequestForLoginUser(body: ApiRequest.LoginBody) {
         runApi(
@@ -51,8 +48,8 @@ class LoginRepository(application: Application) : BaseRepository(application) {
                 ApiClient.apiClient(application).login(body)
             }, apiStatus = responseData
         )
-
     }
+
     //pass this status to loginViewModel
     fun getLoginData() = responseData
 }

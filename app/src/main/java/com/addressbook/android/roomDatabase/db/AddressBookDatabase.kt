@@ -3,13 +3,11 @@ package com.addressbook.android.roomDatabase.db
 import android.content.Context
 import androidx.room.*
 
-
 @Database(
     entities = [AddressBook::class],
     version = 1,
     exportSchema = true
 )
-
 abstract class AddressBookDatabase : RoomDatabase() {
 
     abstract fun getAddressBookDao(): AddressBookDao

@@ -15,7 +15,6 @@ import com.addressbook.android.roomDatabase.db.AddressBook
 import com.addressbook.android.roomDatabase.db.AddressBookDatabase
 import com.addressbook.android.util.*
 
-
 class EditRemoveAddressBookActivity : AppCompatActivity(), View.OnClickListener {
 
     private var isUpdate = false
@@ -23,11 +22,11 @@ class EditRemoveAddressBookActivity : AppCompatActivity(), View.OnClickListener 
     private var mAddressBook: AddressBook? = null
     private val currentContext = this@EditRemoveAddressBookActivity
 
-    lateinit var binding: ActivityEditRemoveAddressBookBinding
-    lateinit var viewModel: AddressViewModel
-    lateinit var addressBookDatabase: AddressBookDatabase
-    lateinit var addressBookRepository: AddressBookRepository
-    lateinit var factory: AddressViewFactory
+    private lateinit var binding: ActivityEditRemoveAddressBookBinding
+    private lateinit var viewModel: AddressViewModel
+    private lateinit var addressBookDatabase: AddressBookDatabase
+    private lateinit var addressBookRepository: AddressBookRepository
+    private lateinit var factory: AddressViewFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,8 +57,7 @@ class EditRemoveAddressBookActivity : AppCompatActivity(), View.OnClickListener 
             mAddressBook = extra!!.getSerializable(Constant.Key_editAddressBook) as AddressBook
         }
 
-        // set the text in button based on adding or editing addressbook
-
+        // set the text in button based on adding or editing addressBook
         binding.apply {
             if (isUpdate) {
                 // set the value from intent bundle
@@ -88,7 +86,7 @@ class EditRemoveAddressBookActivity : AppCompatActivity(), View.OnClickListener 
                 contact_number = binding.edtContactNo.text.toString().trim()
                 isactive = binding.switchActive.isChecked
             }.also {
-                    viewModel.insertAddressBook(addressBook).also { finish() }
+                viewModel.insertAddressBook(addressBook).also { finish() }
             }
 
         }

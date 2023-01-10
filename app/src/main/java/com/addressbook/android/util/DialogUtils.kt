@@ -2,9 +2,6 @@ package com.addressbook.android.util
 
 import android.app.AlertDialog
 import android.content.Context
-import android.graphics.Color
-import cc.cloudist.acplibrary.ACProgressConstant
-import cc.cloudist.acplibrary.ACProgressFlower
 
 class DialogUtils {
 

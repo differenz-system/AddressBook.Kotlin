@@ -20,7 +20,7 @@ object SharedPrefsHelper {
         return sharedPreferences.edit()
     }
 
-    // storing model class in prefrence
+    // storing model class in preference
     private fun toJsonString(params: UserLoginDetail?): String? {
         if (params == null) {
             return null
@@ -55,7 +55,4 @@ object SharedPrefsHelper {
     fun trimString(textView: AppCompatEditText): String {
         return textView.text.toString().trim { it <= ' ' }
     }
-
-
-
 }

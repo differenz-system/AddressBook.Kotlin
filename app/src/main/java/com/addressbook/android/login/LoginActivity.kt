@@ -16,13 +16,12 @@ import com.addressbook.android.model.UserLoginDetail
 import com.addressbook.android.util.*
 import com.facebook.CallbackManager
 
-
 class LoginActivity : BaseAppCompatActivity(), View.OnClickListener {
 
     //Facebook
-    var callbackmanager: CallbackManager? = null
-    lateinit var binding: ActivityLoginBinding
-    lateinit var viewModel: LoginViewModel
+    private var callbackManager: CallbackManager? = null
+    private lateinit var binding: ActivityLoginBinding
+    private lateinit var viewModel: LoginViewModel
     private val currentContext = this@LoginActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +43,9 @@ class LoginActivity : BaseAppCompatActivity(), View.OnClickListener {
     }
 
     private fun doRequestForLogin() {
-        val body = ApiRequest.LoginBody(binding.etEmail.text.toString().trim(), binding.etPassword.text.toString().trim())
+        val body = ApiRequest.LoginBody(
+            binding.etEmail.text.toString().trim(), binding.etPassword.text.toString().trim()
+        )
         viewModel.loginUser(body)
     }
 
@@ -78,24 +79,22 @@ class LoginActivity : BaseAppCompatActivity(), View.OnClickListener {
             when (view?.id) {
                 R.id.btn_login -> {
                     if (isValid()) {
-                        if (ConnectionDetector.internetCheck(this, true))
-                            doRequestForLogin()
+                        if (ConnectionDetector.internetCheck(this, true)) doRequestForLogin()
                     }
                 }
                 R.id.btn_login_fb -> {
-                    if (ConnectionDetector.internetCheck(this, true))
-                        fBLogin()
+                    if (ConnectionDetector.internetCheck(this, true)) fBLogin()
                 }
             }
         }
     }
 
     private fun fBLogin() {
-        viewModel.fBLogin(this).observe(this, androidx.lifecycle.Observer {
+        viewModel.fBLogin(this).observe(this) {
             if (it.accessToken != null) {
                 intentAddressBookListing()
             }
-        })
+        }
     }
 
     private fun intentAddressBookListing() {
@@ -130,6 +129,6 @@ class LoginActivity : BaseAppCompatActivity(), View.OnClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        callbackmanager?.onActivityResult(requestCode, resultCode, data)
+        callbackManager?.onActivityResult(requestCode, resultCode, data)
     }
 }

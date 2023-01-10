@@ -25,9 +25,9 @@ class AddressBookListingActivity : AppCompatActivity(), AddressBookAdapter.OnAdd
     private lateinit var binding: ActivityAddressBookListingBinding
 
     private lateinit var viewModel: AddressViewModel
-    lateinit var addressBookDatabase: AddressBookDatabase
-    lateinit var addressBookRepository: AddressBookRepository
-    lateinit var factory: AddressViewFactory
+    private lateinit var addressBookDatabase: AddressBookDatabase
+    private lateinit var addressBookRepository: AddressBookRepository
+    private lateinit var factory: AddressViewFactory
     private val currentContext = this@AddressBookListingActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +56,6 @@ class AddressBookListingActivity : AppCompatActivity(), AddressBookAdapter.OnAdd
             toolbarLeft.setOnClickListener(currentContext)
         }
     }
-
 
     private fun setUpList() {
         addressBookDatabase = AddressBookDatabase(this)
@@ -88,7 +87,6 @@ class AddressBookListingActivity : AppCompatActivity(), AddressBookAdapter.OnAdd
         }
         handleEmptyList()
     }
-
 
     private fun handleEmptyList() {
         binding.tvNoList.handleVisibleHide(addressableList.isEmpty())

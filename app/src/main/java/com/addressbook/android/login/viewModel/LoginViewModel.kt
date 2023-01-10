@@ -14,12 +14,11 @@ import com.facebook.login.LoginResult
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-
 class LoginViewModel(application: Application) : NetworkViewModel(application) {
 
     override val repository = LoginRepository(application)
     private val loginResults = MutableLiveData<LoginResult>()
-    var responseData: LiveData<NetworkStatus> = repository.getLoginData()
+    private var responseData: LiveData<NetworkStatus> = repository.getLoginData()
 
     fun fBLogin(loginActivity: LoginActivity): LiveData<LoginResult> {
         viewModelScope.launch {

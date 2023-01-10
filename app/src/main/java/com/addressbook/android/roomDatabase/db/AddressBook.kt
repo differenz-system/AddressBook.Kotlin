@@ -8,7 +8,6 @@ import java.io.Serializable
 /**
  * Created by Administrator on 3/14/18.
  */
-
 @Entity(tableName = "AddressBookTable")
 class AddressBook : Serializable {
 
@@ -30,6 +29,4 @@ class AddressBook : Serializable {
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
-
-
 }
