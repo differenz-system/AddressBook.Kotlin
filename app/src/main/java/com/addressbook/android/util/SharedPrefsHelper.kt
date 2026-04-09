@@ -1,12 +1,9 @@
 package com.addressbook.android.util
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.widget.AppCompatEditText
-import com.addressbook.android.login.LoginActivity
 import com.addressbook.android.model.UserLoginDetail
-import com.facebook.login.LoginManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

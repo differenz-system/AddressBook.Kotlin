@@ -13,10 +13,6 @@ object Globals {
     var dialog: ProgressDialog? = null
 
     fun showProgressDialog(context: Context) {
-        /*ACPDialog = ACProgressFlower.Builder(context).direction(ACProgressConstant.DIRECT_CLOCKWISE)
-            .themeColor(Color.WHITE).fadeColor(Color.DKGRAY).build()
-        ACPDialog?.setCanceledOnTouchOutside(false)
-        ACPDialog?.show()*/
         dialog = ProgressDialog(context)
         dialog?.setMessage("Please wait...")
         dialog?.show()
@@ -26,9 +22,6 @@ object Globals {
         if (dialog != null && dialog!!.isShowing) {
             dialog?.dismiss()
         }
-        /*if (ACPDialog != null && ACPDialog!!.isShowing) {
-            ACPDialog?.dismiss()
-        }*/
     }
 
     fun hideKeyboard(activity: Activity) {

@@ -1,7 +1,6 @@
 package com.addressbook.android.api
 
 import android.content.Context
-import com.addressbook.android.BuildConfig
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -31,11 +30,11 @@ object ApiClient {
         val client: OkHttpClient
         val builder = OkHttpClient().newBuilder()
 
-        if (BuildConfig.DEBUG) {
-            val interceptor = HttpLoggingInterceptor()
-            interceptor.level = HttpLoggingInterceptor.Level.BODY
-            builder.addInterceptor(interceptor)
-        }
+//        if (BuildConfig.DEBUG) {
+//            val interceptor = HttpLoggingInterceptor()
+//            interceptor.level = HttpLoggingInterceptor.Level.BODY
+//            builder.addInterceptor(interceptor)
+//        }
 
         builder.addInterceptor(ConnectivityInterceptor(context))
         if (isConnectionCheck) {

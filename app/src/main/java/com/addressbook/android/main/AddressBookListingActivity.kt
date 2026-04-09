@@ -102,7 +102,7 @@ class AddressBookListingActivity : AppCompatActivity(), AddressBookAdapter.OnAdd
     }
 
     override fun onAddressDeleted(addressBook: AddressBook) {
-        val dialog = AlertDialog.Builder(this, R.style.ThemeOverlay_AppCompat_Dialog)
+        val dialog = AlertDialog.Builder(this)
         dialog.setTitle(resources.getString(R.string.delete_address))
             .setMessage(resources.getString(R.string.are_you_sure))
             .setPositiveButton(R.string.yes) { _, _ ->

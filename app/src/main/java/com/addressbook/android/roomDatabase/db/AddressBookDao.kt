@@ -2,7 +2,6 @@ package com.addressbook.android.roomDatabase.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.addressbook.android.roomDatabase.db.AddressBook
 
 @Dao
 interface AddressBookDao {

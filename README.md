@@ -10,7 +10,7 @@ The app does the following:
 
 ## Pre-requisites
 - Android device or emulator running API 23 (6.0 - Marshmallow) or above
-- [Android Studio Chipmunk | 2021.2.1](https://developer.android.com/studio/index.html)
+- [Android Studio Otter 3 Feature Drop | 2025.2.3](https://developer.android.com/studio/index.html)
 
 ## Getting Started
 1. [Install Android Studio](https://developer.android.com/studio/index.html)
