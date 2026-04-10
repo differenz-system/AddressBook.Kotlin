@@ -33,5 +33,5 @@ The app does the following:
 
 ## Support
 If you've found an error in this sample, please [report an issue](https://github.com/differenz-system/AddressBook.Kotlin/issues/new). You can also send your feedback and suggestions at info@differenzsystem.com
-
+ 
 Happy coding!
